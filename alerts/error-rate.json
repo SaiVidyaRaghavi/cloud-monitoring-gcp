@@ -1,0 +1,35 @@
+{
+  "displayName": "High Error Rate Alert",
+  "combiner": "OR",
+  "conditions": [
+    {
+      "displayName": "More than 5 application errors in 5 minutes",
+      "conditionThreshold": {
+        "filter": "resource.type = \"gce_instance\" AND metric.type = \"logging.googleapis.com/user/app_error_count\"",
+        "comparison": "COMPARISON_GT",
+        "thresholdValue": 5,
+        "duration": "0s",
+        "aggregations": [
+          {
+            "alignmentPeriod": "300s",
+            "perSeriesAligner": "ALIGN_SUM"
+          }
+        ],
+        "trigger": {
+          "count": 1
+        }
+      }
+    }
+  ],
+  "alertStrategy": {
+    "autoClose": "1800s"
+  },
+  "documentation": {
+    "mimeType": "text/markdown",
+    "content": "Application error rate is above normal. Check Logs Explorer with filter `textPayload:\"APP_ERROR\"` and recent changes."
+  },
+  "notificationChannels": [
+    "projects/PROJECT_ID/notificationChannels/CHANNEL_ID"
+  ],
+  "enabled": true
+}

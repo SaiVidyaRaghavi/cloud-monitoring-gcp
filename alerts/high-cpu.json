@@ -1,0 +1,35 @@
+{
+  "displayName": "High CPU Usage Alert",
+  "combiner": "OR",
+  "conditions": [
+    {
+      "displayName": "VM CPU utilization > 80% (0.8) for 5 minutes",
+      "conditionThreshold": {
+        "filter": "resource.type = \"gce_instance\" AND metric.type = \"compute.googleapis.com/instance/cpu/utilization\"",
+        "comparison": "COMPARISON_GT",
+        "thresholdValue": 0.8,
+        "duration": "300s",
+        "aggregations": [
+          {
+            "alignmentPeriod": "60s",
+            "perSeriesAligner": "ALIGN_MEAN"
+          }
+        ],
+        "trigger": {
+          "count": 1
+        }
+      }
+    }
+  ],
+  "alertStrategy": {
+    "autoClose": "1800s"
+  },
+  "documentation": {
+    "mimeType": "text/markdown",
+    "content": "CPU utilization has exceeded the configured threshold. Investigate the VM's load and running processes (`top`, `ps aux --sort=-%cpu | head`)."
+  },
+  "notificationChannels": [
+    "projects/PROJECT_ID/notificationChannels/CHANNEL_ID"
+  ],
+  "enabled": true
+}
